@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Scientist Challenge | Supervised vs Unsupervised Learning</title>
+<style>
+:root{
+  --ink:#172033; --muted:#687386; --line:#dfe5ed; --bg:#f4f7fb;
+  --card:#ffffff; --blue:#1769aa; --purple:#6d3fa0; --gold:#b77900;
+  --green:#19764a; --red:#b42318;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,Arial,sans-serif}
+.container{max-width:1100px;margin:auto;padding:28px 22px 55px}
+header{text-align:center;padding:18px 0 10px}
+.kicker{font-weight:800;letter-spacing:2px;color:var(--blue);font-size:.82rem}
+h1{font-size:clamp(2rem,5vw,3.5rem);margin:8px 0}
+.subtitle{color:var(--muted);font-size:1.08rem;max-width:760px;margin:auto;line-height:1.6}
+.status{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:22px 0}
+.pill{background:white;border:1px solid var(--line);padding:9px 16px;border-radius:999px;font-weight:800;box-shadow:0 3px 12px #00000008}
+.card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:28px;box-shadow:0 10px 30px #18263b0b}
+.scenario-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}
+.scenario-number{font-size:.82rem;font-weight:900;letter-spacing:1.4px;color:var(--blue)}
+h2{margin:7px 0 10px;font-size:1.65rem}
+h3{margin-bottom:8px}
+.scenario{font-size:1.12rem;line-height:1.7;margin:20px 0}
+.data-box{background:#f7f9fc;border:1px solid var(--line);padding:18px;border-radius:16px;margin:18px 0}
+.data-box code{font-family:ui-monospace,monospace}
+.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}
+.choice{background:white;border:2px solid var(--line);border-radius:16px;padding:17px;text-align:left;cursor:pointer;transition:.15s}
+.choice:hover{border-color:#8ea9c3;transform:translateY(-2px)}
+.choice strong{display:block;font-size:1.05rem;margin-bottom:5px}
+.choice small{color:var(--muted);line-height:1.45}
+.choice.selected{border-color:var(--blue);background:#eef7ff}
+.reasoning{margin-top:18px}
+textarea{width:100%;min-height:105px;border:2px solid var(--line);border-radius:16px;padding:15px;font:inherit;resize:vertical}
+textarea:focus{outline:none;border-color:var(--blue)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+button{border:0;border-radius:13px;padding:12px 18px;font-weight:850;font-size:.98rem;cursor:pointer}
+.primary{background:var(--ink);color:white}
+.secondary{background:#e9edf3;color:var(--ink)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.feedback{margin-top:20px;border-radius:16px;padding:18px;line-height:1.6}
+.correct{background:#eaf8f1;border:1px solid #b9e3ce;color:#155c3b}
+.mixed{background:#fff7df;border:1px solid #ecd49a;color:#674d00}
+.incorrect{background:#fff0ef;border:1px solid #f0c1bc;color:#8d2118}
+.rubric{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
+.rubric div{border:1px solid var(--line);border-radius:15px;padding:15px;background:#fafbfd}
+.rubric b{display:block;margin-bottom:5px}
+.final{display:none}
+.final h2{text-align:center}
+.big-idea{font-size:1.35rem;font-weight:900;text-align:center;padding:22px;background:#f0f6ff;border-radius:18px;margin:22px 0}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.compare>div{padding:20px;border-radius:18px;border:1px solid var(--line)}
+.blue{background:#eef7ff}.purple{background:#f5effb}
+.question-list{line-height:1.9}
+.mini-note{font-size:.9rem;color:var(--muted);margin-top:8px}
+@media(max-width:760px){
+ .choices,.rubric,.compare{grid-template-columns:1fr}
+ .scenario-head{display:block}
+}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="kicker">DATA SCIENCE • DECISION MAKING • CRITICAL THINKING</div>
+  <h1>Data Scientist Challenge</h1>
+  <p class="subtitle">
+    You are the data scientist. The client gives you a problem—not an algorithm.
+    Your job is to determine what kind of learning approach fits the question and defend your decision.
+  </p>
+</header>
+
+<div class="status">
+  <div class="pill">Case <span id="caseNum">1</span> / 6</div>
+  <div class="pill">Score <span id="score">0</span></div>
+  <div class="pill">🧠 Reasoning matters</div>
+</div>
+
+<section class="card" id="challenge">
+  <div class="scenario-head">
+    <div>
+      <div class="scenario-number" id="scenarioLabel">CASE 01</div>
+      <h2 id="title"></h2>
+    </div>
+  </div>
+
+  <div class="scenario" id="scenario"></div>
+  <div id="dataBox"></div>
+
+  <h3>1. What learning approach would you investigate?</h3>
+  <div class="choices">
+    <div class="choice" onclick="selectChoice(this,'supervised')">
+      <strong>🏷️ Supervised</strong>
+      <small>Learn from labeled examples to predict a known outcome.</small>
+    </div>
+    <div class="choice" onclick="selectChoice(this,'unsupervised')">
+      <strong>🔎 Unsupervised</strong>
+      <small>Discover structure, groups, or patterns without predefined labels.</small>
+    </div>
+    <div class="choice" onclick="selectChoice(this,'depends')">
+      <strong>⚖️ It depends</strong>
+      <small>The correct approach cannot be determined without additional information.</small>
+    </div>
+  </div>
+
+  <div class="reasoning">
+    <h3>2. Defend your decision</h3>
+    <p class="mini-note">What is the model being asked to do? Do we have labels? What information is missing?</p>
+    <textarea id="reason" placeholder="Explain your reasoning in 1–3 sentences..."></textarea>
+  </div>
+
+  <div class="actions">
+    <button class="primary" id="submit" onclick="submitAnswer()">Submit Analysis</button>
+    <button class="secondary" onclick="showHint()">Need a hint</button>
+    <button class="secondary" id="next" onclick="nextCase()" disabled>Next Case →</button>
+  </div>
+
+  <div id="feedback"></div>
+
+  <div class="rubric">
+    <div><b>+1 Decision</b>Identify the appropriate approach.</div>
+    <div><b>+1 Reasoning</b>Explain the evidence behind your choice.</div>
+    <div><b>+1 Data Awareness</b>Recognize labels, missing information, or assumptions.</div>
+  </div>
+</section>
+
+<section class="card final" id="final">
+  <h2>Challenge Complete</h2>
+  <div class="big-idea">The algorithm does not decide the problem. <br>You decide what question the data needs to answer.</div>
+  <div class="compare">
+    <div class="blue">
+      <h3>🏷️ Supervised Learning</h3>
+      <p><strong>Data + known outcomes → learn a mapping → predict</strong></p>
+      <p>Typical questions: “Will this customer churn?” “Is this transaction fraudulent?” “What will the price be?”</p>
+    </div>
+    <div class="purple">
+      <h3>🔎 Unsupervised Learning</h3>
+      <p><strong>Data without predefined outcomes → discover structure</strong></p>
+      <p>Typical questions: “What customer segments exist?” “Which observations are similar?”</p>
+    </div>
+  </div>
+  <div class="data-box">
+    <h3>Before choosing an algorithm, ask:</h3>
+    <div class="question-list">
+      1. What exactly are we trying to accomplish?<br>
+      2. Are we predicting a known outcome or discovering patterns?<br>
+      3. Do we have reliable labels?<br>
+      4. What information is missing?<br>
+      5. How will we know whether the result is useful?
+    </div>
+  </div>
+  <button class="primary" onclick="restart()">↻ Run the Challenge Again</button>
+</section>
+</div>
+
+<script>
+const cases = [
+{
+ title:"Customer Segmentation",
+ scenario:`A fast-food company has 2 million customer transactions. No customer has been labeled as “frequent,” “occasional,” or “infrequent.” The company wants to discover natural customer groups based on order frequency, average spending, time of day, and products purchased.`,
+ data:`<strong>Available data:</strong> Orders • Average spend • Visits/month • Product categories<br><strong>Known target label?</strong> No.`,
+ answer:"unsupervised",
+ explanation:`The goal is to <strong>discover groups</strong>, and there is no predefined target label. Clustering would be a reasonable unsupervised approach. The key clue is that management has not supplied the categories in advance.`,
+ hint:"Ask yourself: Are we predicting a known outcome, or trying to discover groups?"
+},
+{
+ title:"Membership Cancellation",
+ scenario:`A subscription company wants to predict whether a current customer will cancel their membership within the next 30 days. The company has historical records showing which previous customers canceled.`,
+ data:`<strong>Available data:</strong> Customer behavior + historical cancellation outcomes<br><strong>Known target label?</strong> Yes: canceled / did not cancel.`,
+ answer:"supervised",
+ explanation:`This is supervised learning because historical examples contain a known outcome—the cancellation label. The model can learn from those labeled examples and predict the outcome for new customers.`,
+ hint:"Look for a known outcome that the model is being asked to predict."
+},
+{
+ title:"The Fraud Problem",
+ scenario:`A bank has millions of transactions. In Scenario A, investigators have reliably labeled past transactions as “fraud” or “legitimate.” The bank wants to classify new transactions.`,
+ data:`<strong>Target:</strong> Fraud vs. legitimate<br><strong>Historical labels:</strong> Available and considered reliable.`,
+ answer:"supervised",
+ explanation:`Because reliable historical labels exist and the goal is to classify new observations, this is a supervised classification problem.`,
+ hint:"What would the model learn from the historical examples?"
+},
+{
+ title:"Same Data. Different Question.",
+ scenario:`You have the exact same customer dataset: order frequency, average spend, visits per month, and favorite product category. However, management has NOT told you what outcome they want to predict. They simply say, “Find something useful in this data.”`,
+ data:`<strong>Available data:</strong> Customer behavioral variables<br><strong>Known target label?</strong> No clear target has been defined.`,
+ answer:"depends",
+ explanation:`This is the critical-thinking case. You cannot responsibly choose a modeling approach from the dataset alone. You first need to clarify the business question. If the goal becomes customer segmentation, unsupervised learning could fit. If a labeled outcome is later defined for prediction, supervised learning could fit.`,
+ hint:"Is having data enough to choose the machine-learning method?"
+},
+{
+ title:"Anomaly Detection",
+ scenario:`A data center records thousands of network events every minute. There are very few confirmed examples of attacks. Security analysts want the system to identify unusual patterns that deserve investigation.`,
+ data:`<strong>Available data:</strong> Network traffic and event patterns<br><strong>Reliable attack labels:</strong> Very limited.`,
+ answer:"unsupervised",
+ explanation:`With few reliable labels and a goal of finding unusual patterns, an unsupervised or anomaly-detection approach may be appropriate. In practice, the exact method depends on the definition of “unusual” and the operational context.`,
+ hint:"What happens when reliable examples of the thing you're trying to predict are scarce?"
+},
+{
+ title:"The Hidden Assumption",
+ scenario:`A hospital has thousands of medical images. A data scientist says, “We should use supervised learning because this is medical data.” Another scientist says, “We cannot decide yet.” Who has the stronger reasoning?`,
+ data:`<strong>Important detail:</strong> The scenario does not say whether the images have reliable diagnostic labels or what task the model must perform.`,
+ answer:"depends",
+ explanation:`The second position is better supported by the information given—not because supervised learning is inappropriate, but because the task and labels have not been established. If labeled diagnoses exist and the goal is prediction/classification, supervised learning may fit. Without that information, the choice is premature.`,
+ hint:"Does the domain—medical, financial, retail, etc.—automatically determine the learning type?"
+}
+];
+
+let index=0, score=0, selected=null, submitted=false;
+
+function render(){
+ const c=cases[index];
+ document.getElementById("caseNum").textContent=index+1;
+ document.getElementById("scenarioLabel").textContent="CASE "+String(index+1).padStart(2,"0");
+ document.getElementById("title").textContent=c.title;
+ document.getElementById("scenario").innerHTML=c.scenario;
+ document.getElementById("dataBox").innerHTML='<div class="data-box">'+c.data+'</div>';
+ document.getElementById("feedback").innerHTML="";
+ document.getElementById("reason").value="";
+ document.getElementById("next").disabled=true;
+ document.getElementById("submit").disabled=false;
+ document.querySelectorAll(".choice").forEach(x=>x.classList.remove("selected"));
+ selected=null; submitted=false;
+}
+function selectChoice(el,value){
+ if(submitted)return;
+ document.querySelectorAll(".choice").forEach(x=>x.classList.remove("selected"));
+ el.classList.add("selected"); selected=value;
+}
+function submitAnswer(){
+ if(!selected){alert("Choose an approach before submitting.");return;}
+ const c=cases[index];
+ const reasoning=document.getElementById("reason").value.trim();
+ let points=0;
+ if(selected===c.answer) points++;
+ let reasoningQuality=reasoning.length>=25;
+ if(reasoningQuality) points++;
+ let dataAware=(reasoning.toLowerCase().includes("label")||reasoning.toLowerCase().includes("predict")||reasoning.toLowerCase().includes("pattern")||reasoning.toLowerCase().includes("group")||reasoning.toLowerCase().includes("question"));
+ if(dataAware) points++;
+ score+=points;
+ document.getElementById("score").textContent=score;
+ let cls=selected===c.answer ? "correct" : (c.answer==="depends" && selected!=="depends" ? "mixed" : "incorrect");
+ let headline=selected===c.answer ? "Analysis supported. +" : "Reconsider the evidence. +";
+ document.getElementById("feedback").innerHTML=`<div class="feedback ${cls}">
+ <strong>${headline}${points} points</strong><br>
+ ${c.explanation}
+ ${reasoningQuality ? "<br><br><strong>Your reasoning was substantial enough to evaluate.</strong>" : "<br><br><strong>Tip:</strong> Explain why the data and objective support your choice."}
+ </div>`;
+ document.getElementById("submit").disabled=true;
+ document.getElementById("next").disabled=false;
+ submitted=true;
+}
+function showHint(){
+ document.getElementById("feedback").innerHTML=`<div class="feedback mixed"><strong>Hint:</strong> ${cases[index].hint}</div>`;
+}
+function nextCase(){
+ if(index<cases.length-1){index++;render();}
+ else{
+   document.getElementById("challenge").style.display="none";
+   document.getElementById("final").style.display="block";
+ }
+}
+function restart(){
+ index=0;score=0;
+ document.getElementById("score").textContent=0;
+ document.getElementById("challenge").style.display="block";
+ document.getElementById("final").style.display="none";
+ render();
+}
+render();
+</script>
+</body>
+</html>
